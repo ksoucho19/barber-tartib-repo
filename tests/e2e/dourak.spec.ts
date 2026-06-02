@@ -9,10 +9,10 @@ const CUSTOMER_NAME = "أحمد محمد"
 const CUSTOMER_PHONE = "0555000000"
 
 function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const url = process.env.NEXT_PUBLIC_SUPABASE_LINK
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) {
-    throw new Error("NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set")
+    throw new Error("NEXT_PUBLIC_SUPABASE_LINK and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set")
   }
   return createClient(url, key)
 }
@@ -24,7 +24,7 @@ test.describe("دورك — Queue Management E2E", () => {
     if (!serviceKey) return
 
     const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_LINK!,
       serviceKey,
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
@@ -128,7 +128,7 @@ test.describe("دورك — Queue Management E2E", () => {
     }
 
     const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_LINK!,
       serviceKey,
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
@@ -158,7 +158,7 @@ test.describe("دورك — Queue Management E2E", () => {
     await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 })
 
     const merchantClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_LINK!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     )
     const { data: sessionData } = await merchantClient.auth.getSession()

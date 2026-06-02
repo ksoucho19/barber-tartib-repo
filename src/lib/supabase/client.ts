@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 
 export function createClient() {
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_LINK!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       realtime: {
@@ -17,7 +17,7 @@ export function createClient() {
 
 export function createCustomerClient(jwt: string): SupabaseClient {
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_LINK!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {
@@ -37,7 +37,7 @@ export function createCustomerClient(jwt: string): SupabaseClient {
 
 export function createDisplayClient(jwt: string): SupabaseClient {
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_LINK!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {

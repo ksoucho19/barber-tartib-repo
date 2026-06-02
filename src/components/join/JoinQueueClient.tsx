@@ -118,7 +118,7 @@ export function JoinQueueClient({ business }: JoinQueueClientProps) {
       }
 
       const tokenRes = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/create-customer-token`,
+        `${process.env.NEXT_PUBLIC_SUPABASE_LINK}/functions/v1/create-customer-token`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

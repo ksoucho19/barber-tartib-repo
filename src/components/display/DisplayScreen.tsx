@@ -24,7 +24,7 @@ const RETRY_DELAY = 2000
 
 function fetchToken(slug: string): Promise<{ token: string; business_id: string }> {
   return fetch(
-    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/create-display-token`,
+    `${process.env.NEXT_PUBLIC_SUPABASE_LINK}/functions/v1/create-display-token`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
