@@ -13,11 +13,15 @@ export default async function JoinQueuePage({ params }: JoinPageProps) {
   const { slug } = await params
   const supabase = await createClient()
 
-  const { data: business } = await supabase
+  const { data: business, error } = await supabase
     .from("businesses")
     .select("id, name, slug")
     .eq("slug", slug)
     .maybeSingle()
+
+  if (error) {
+    throw new Error(`Supabase query failed: ${error.message}`)
+  }
 
   if (!business) {
     notFound()
