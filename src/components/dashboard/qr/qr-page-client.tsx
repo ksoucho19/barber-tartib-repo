@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toaster"
 import { PageTransition } from "@/components/layout/PageTransition"
-import { QrSkeleton } from "./qr-skeleton"
 import { QrCode, Copy, Download, Printer, ExternalLink, Check } from "lucide-react"
 
 interface BusinessInfo {
@@ -163,6 +162,7 @@ function QrCard({ type, businessName, slug, url }: QrCardProps) {
             <div className="absolute inset-0 rounded-2xl bg-emerald-500/10 blur-3xl" />
             <div className="relative rounded-2xl border border-white/10 bg-white p-4 shadow-2xl">
               <QRCodeCanvas
+                key={url}
                 ref={canvasRef}
                 value={url}
                 size={240}
@@ -238,6 +238,7 @@ function QrCard({ type, businessName, slug, url }: QrCardProps) {
             aria-hidden="true"
           >
             <QRCodeSVG
+              key={url}
               value={url}
               size={1200}
               level="H"
@@ -257,7 +258,6 @@ interface QrPageClientProps {
 }
 
 export function QrPageClient({ business }: QrPageClientProps) {
-  // التعديل الجذري هنا لإزالة ميكانيزم الـ /q/ المكسور وجعل الرابط مباشر
   const queueUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${business.slug}`
   const displayUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${business.slug}/display`
 
