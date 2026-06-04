@@ -35,10 +35,12 @@ self.addEventListener("fetch", (event) => {
     return
   }
 
-  if (
-    url.hostname.endsWith(".supabase.co") &&
-    (url.pathname.includes("/rest/v1/") || url.pathname.includes("/realtime/v1/"))
-  ) {
+  if (url.hostname.endsWith(".supabase.co")) {
+    event.respondWith(fetch(request))
+    return
+  }
+
+  if (request.method !== "GET") {
     event.respondWith(fetch(request))
     return
   }
@@ -63,10 +65,6 @@ self.addEventListener("fetch", (event) => {
       }),
     )
   } else {
-    event.respondWith(
-      fetch(request)
-        .then((response) => response)
-        .catch(() => caches.match(request)),
-    )
+    event.respondWith(fetch(request))
   }
 })
