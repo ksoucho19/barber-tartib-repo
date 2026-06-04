@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic"
 
 import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { JoinQueueClient } from "@/components/join/JoinQueueClient"
 
 interface JoinPageProps {
   params: Promise<{
@@ -15,7 +16,7 @@ export default async function JoinQueuePage({ params }: JoinPageProps) {
 
   const { data: business, error } = await supabase
     .from("businesses")
-    .select("id, name, slug")
+    .select("id, name, slug, settings")
     .eq("slug", slug)
     .maybeSingle()
 
@@ -27,19 +28,41 @@ export default async function JoinQueuePage({ params }: JoinPageProps) {
     notFound()
   }
 
+  let queueId: string | null = null
+
+  const { data: queues } = await supabase
+    .from("queues")
+    .select("id")
+    .eq("business_id", business.id)
+    .limit(1)
+
+  if (queues && queues.length > 0) {
+    queueId = queues[0].id
+  } else {
+    const { data: newQueue, error: createError } = await supabase
+      .from("queues")
+      .insert({
+        business_id: business.id,
+        name: "الطابور الرئيسي",
+        is_active: true,
+      })
+      .select("id")
+      .single()
+
+    if (!createError && newQueue) {
+      queueId = newQueue.id
+    }
+  }
+
   return (
-    <div className="min-h-screen w-full bg-[#0B0F19] text-white flex flex-col items-center justify-center p-4" style={{ direction: "rtl" }}>
-      <div className="w-full max-w-md text-center space-y-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-500/20 ring-1 ring-emerald-500/30 mx-auto">
-          <span className="text-3xl font-bold text-emerald-400">د</span>
-        </div>
-        
-        <h1 className="text-2xl font-bold">{business.name}</h1>
-        
-        <div className="p-6 rounded-2xl border border-white/10 bg-[#151D30] shadow-xl">
-          <p className="text-emerald-400 font-medium animate-pulse">...</p>
-        </div>
-      </div>
-    </div>
+    <JoinQueueClient
+      business={{
+        id: business.id,
+        name: business.name,
+        slug: business.slug,
+        settings: business.settings as { default_service_duration_minutes?: number } | null,
+        queueId,
+      }}
+    />
   )
 }

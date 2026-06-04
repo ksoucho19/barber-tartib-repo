@@ -122,9 +122,7 @@ export default function OnboardingPage() {
 
       router.push("/dashboard")
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "حدث خطأ أثناء إنشاء النشاط التجاري"
-      setError(message)
+      setError(err instanceof Error ? err.message : String(err))
       setSubmitting(false)
     }
   }
