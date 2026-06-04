@@ -117,29 +117,15 @@ export function JoinQueueClient({ business }: JoinQueueClientProps) {
         position: number
       }
 
-      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      const { data: tokenData, error: tokenError } = await supabase.functions.invoke("create-customer-token", {
+        body: { public_token: result.public_token },
+      })
 
-      const tokenRes = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_LINK}/functions/v1/create-customer-token`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${anonKey}`,
-            apikey: anonKey!,
-          },
-          body: JSON.stringify({ public_token: result.public_token }),
-        },
-      )
-
-      if (!tokenRes.ok) {
-        const body = await tokenRes.json().catch(() => ({}))
-        throw new Error(
-          (body as { error?: string }).error ?? "فشل الحصول على رمز الدخول",
-        )
+      if (tokenError) {
+        throw new Error(tokenError.message)
       }
 
-      const { token } = (await tokenRes.json()) as { token: string }
+      const { token } = tokenData as { token: string }
 
       localStorage.setItem(LS_TOKEN_KEY, result.public_token)
       localStorage.setItem(LS_JWT_KEY, token)
