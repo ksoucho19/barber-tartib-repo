@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
+import { QrCode } from "lucide-react"
 
 const navItems = [
   {
@@ -16,6 +17,11 @@ const navItems = [
         <line x1="12" y1="22.08" x2="12" y2="12" />
       </svg>
     ),
+  },
+  {
+    href: "/dashboard/qr",
+    label: "رمز QR الحجز",
+    icon: <QrCode className="h-5 w-5" />,
   },
   {
     href: "/dashboard/analytics",

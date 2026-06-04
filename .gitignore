@@ -41,8 +41,5 @@ next-env.d.ts
 playwright-report/
 test-results/
 
-.next/
-node_modules/
-.env
-.env.local
-.env.*.local
+# supabase CLI
+supabase/.temp/
