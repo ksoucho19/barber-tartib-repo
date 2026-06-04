@@ -258,7 +258,7 @@ interface QrPageClientProps {
 }
 
 export function QrPageClient({ business }: QrPageClientProps) {
-  const queueUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${business.slug}`
+  const queueUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${business.slug}/join`
   const displayUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${business.slug}/display`
 
   return (
