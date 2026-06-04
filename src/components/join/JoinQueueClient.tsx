@@ -117,11 +117,17 @@ export function JoinQueueClient({ business }: JoinQueueClientProps) {
         position: number
       }
 
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
       const tokenRes = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_LINK}/functions/v1/create-customer-token`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${anonKey}`,
+            apikey: anonKey!,
+          },
           body: JSON.stringify({ public_token: result.public_token }),
         },
       )

@@ -2,25 +2,25 @@ import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0"
 import { SignJWT } from "https://esm.sh/jose@5.2.0"
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+}
+
 interface ReqBody {
   public_token: string
 }
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    })
+    return new Response("ok", { status: 200, headers: corsHeaders })
   }
 
   if (req.method !== "POST") {
     return new Response(
       JSON.stringify({ error: "Method not allowed" }),
-      { status: 405, headers: { "Content-Type": "application/json" } },
+      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     )
   }
 
@@ -30,7 +30,7 @@ serve(async (req) => {
     if (!public_token || typeof public_token !== "string") {
       return new Response(
         JSON.stringify({ error: "public_token is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       )
     }
 
@@ -48,7 +48,7 @@ serve(async (req) => {
     if (error || !ticket) {
       return new Response(
         JSON.stringify({ error: "Ticket not found" }),
-        { status: 404, headers: { "Content-Type": "application/json" } },
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       )
     }
 
@@ -58,7 +58,7 @@ serve(async (req) => {
         JSON.stringify({ error: "Server configuration error" }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       )
     }
@@ -77,17 +77,14 @@ serve(async (req) => {
       JSON.stringify({ token }),
       {
         status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     )
   } catch (err) {
     console.error("create-customer-token error:", err)
     return new Response(
       JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     )
   }
 })
