@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { createDisplayClient } from "@/lib/supabase/client"
+import { createClient, createDisplayClient } from "@/lib/supabase/client"
 import { EstimatedWaitBadge } from "@/components/wait-time/EstimatedWaitBadge"
 import { predictWaitTime } from "@/lib/wait-time"
 import type { SupabaseClient } from "@supabase/supabase-js"
@@ -22,23 +22,17 @@ interface DisplayTicket {
 const MAX_RETRIES = 3
 const RETRY_DELAY = 2000
 
-function fetchToken(slug: string): Promise<{ token: string; business_id: string }> {
-  return fetch(
-    `${process.env.NEXT_PUBLIC_SUPABASE_LINK}/functions/v1/create-display-token`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug }),
-    },
-  ).then(async (res) => {
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
-      throw new Error(
-        (body as { error?: string }).error ?? "فشل الحصول على رمز العرض",
-      )
-    }
-    return res.json() as Promise<{ token: string; business_id: string }>
+async function fetchToken(slug: string): Promise<{ token: string; business_id: string }> {
+  const supabase = createClient()
+  const { data, error } = await supabase.functions.invoke("create-display-token", {
+    body: { slug },
   })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data as { token: string; business_id: string }
 }
 
 export function DisplayScreen({
