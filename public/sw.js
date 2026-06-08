@@ -28,15 +28,14 @@ self.addEventListener("activate", (event) => {
 })
 
 self.addEventListener("fetch", (event) => {
+  if (event.request.url.includes("supabase.co")) {
+    return
+  }
+
   const { request } = event
   const url = new URL(request.url)
 
   if (url.protocol === "ws:" || url.protocol === "wss:") {
-    return
-  }
-
-  if (url.hostname.endsWith(".supabase.co")) {
-    event.respondWith(fetch(request))
     return
   }
 
